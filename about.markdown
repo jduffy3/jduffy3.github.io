@@ -4,6 +4,5 @@ title: About
 permalink: /about/
 ---
 
-My name is James Duffy and this is my blog.
-![Me!](/assets/images/profile.jpg)
+### My name is James Duffy and this is my blog.
 

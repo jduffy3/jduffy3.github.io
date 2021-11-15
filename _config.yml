@@ -22,7 +22,7 @@ title: James Duffy
 email: jduffy3@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Thoughts, musings and learnings from Software Engineering.
-  I'm hoping by documenting my path and learnings it will re-inforce my own understanding
+  I'm hoping by documenting my own journey it will re-inforce my understanding
   and help others.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com

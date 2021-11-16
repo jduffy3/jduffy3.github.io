@@ -130,7 +130,7 @@ This is demonstrating a key design principle of *encapsulate what varies* what v
 ## Conclusion
 
 I find the Template Pattern a good starter for learning about design patterns. It is relatively easy to understand yet provides powerful capabilities.
-
+For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns. They also explain further opportunities in the template pattern such as introducing hooks, where you can provide a no-op method that a sub class can optionally override. Thereby allowing you to create clasess that may or may not perform a particular operation.
 
 ## References
 

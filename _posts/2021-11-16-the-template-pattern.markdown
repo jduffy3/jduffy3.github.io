@@ -6,7 +6,7 @@ A behavioral design pattern.
 
 ## Seriously, what is it?
 
-Templates live among us everywhere, they are a set of instructions that define how something is done. If you've ever tried following a recipe or tutorial, congratulations, you've come across the template pattern! Well, kinda... Those were specific instructions with no variation. That doesn't sound very [open to extension and closed for modification](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle).
+Templates live among us everywhere, they are a set of instructions that define how something is done. If you've ever tried following a recipe or tutorial, congratulations, you've come across the template pattern! Well, kinda... Those may have had specific instructions with no variation. That doesn't sound very ["open to extension and closed for modification"](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle).
 
 > *The template pattern allows you to define a set of instructions and let subclasses define how particular instructions are executed.*
 

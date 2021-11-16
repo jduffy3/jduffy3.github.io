@@ -84,7 +84,7 @@ Now for the implementation.
 Here we define the concrete impelementations of this class. For example it could look like
 
 ```kotlin
-class RunningExercise(private val runner: Runner) : ExerciseRoutine() {
+class RunningExercise(private val runner: Person) : ExerciseRoutine() {
 
   override fun warmUp(minutes: Int) {
     runner.stretch(minutes)
@@ -107,21 +107,23 @@ The only real complexity above, is determining how many minutes to Walk versus h
 
 The takeway here is that we've defined an ordered executable  *routine*.
 
-For example our client code would now look like:
+Our client would execute the above as:
 
 ```kotlin
-class Main() {
+class App() {
   fun main() {
-    val runner = Runner("Kieran")
-    val run = RunningExercise(runner)
+    val person = Person("Kieran")
+    val run = RunningExercise(person)
     run.exercise(10, 45, 10)
   }
 }
 ```
 
-Our implementing class `RunningExercise` is demonstrating a key design principle of *encapsulate what varies* what varies here is how a runner exercises. 
-However, what doesn't vary is the order that it is done in. This is defined in our abstract class (the template).
+Our implementing class `RunningExercise` is demonstrating a key design principle of *encapsulating what varies*. 
+What varies is how a person runs. In the future We might have another class that performs a SwimmingExercise.
+What doesn't vary is the order that it is done in. This is defined in our abstract class (the template). This also helps keep our code [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 
+With the above code we can be sure that people are exercising correctly and our developers can easily add new Exercises to the program!
 
 ## Conclusion
 
@@ -131,8 +133,9 @@ It is relatively easy to understand yet provides powerful capabilities.
 For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns.  I've read other ones but I always come back to these two.
 
 They explain further ideas in the template pattern such as introducing hooks, where you can define a method that a sub class can optionally override. 
-Allowing you to create clasess that may or may not perform a particular operation. Depending on the complexity of what you're trying to model, you can introduce conditional checks and member variables that are also inherited.
+This allows you to create clasess that may or may not perform a particular operation. Depending on the complexity of what you're trying to model, you can introduce conditional checks and member variables that are also inherited.
 
+I would highly recommend reading (and re-reading) them! The above code example is by no means definitive, in fact you might argue with me the [Strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern) would be better suited here, and you *could* be right! The takeaway is the understanding of the pattern.
 
 ## References
 

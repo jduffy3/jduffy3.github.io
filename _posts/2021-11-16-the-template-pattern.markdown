@@ -8,18 +8,20 @@ A behavioral design pattern.
 
 Templates live among us everywhere, they are a set of instructions that define how something is done. If you've ever tried following a recipe or tutorial, congratulations, you've come across the template pattern! Well, kinda... Those were specific instructions with no variation. That doesn't sound very [open to extension and closed for modification](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle).
 
-> The template pattern allows you to define a set of instructions and let subclasses define how particular instructions are executed.
+> *The template pattern allows you to define a set of instructions and let subclasses define how particular instructions are executed.*
 
 So what would be a real example of a template pattern? Some examples are:
 
 * Morning routine
-* Workout routine
+* Exercise routine
 
-The key concept is that you're describing an ordered set of instructions. In the examples above I intuitively added routine to the end of each one. When writing in general, I try to be mindful of duplcation. Generally, I wouldn't  like seeing the word routine  duplicated like that. However, I think in this instance it serves explaining the template pattern quite well. The definition of [routine](https://www.lexico.com/en/definition/routine) even tells you:
+The key concept is that you're describing an ordered set of instructions. In the examples above I intuitively added routine to the end of each one. When writing in general, I try to be mindful of duplcation. Generally, I wouldn't  like seeing the word routine  duplicated like that. However, I think in this instance it serves explaining the template pattern quite well. 
 
-> a sequence of actions regularly followed; a fixed program.
+The definition of [routine](https://www.lexico.com/en/definition/routine) even tells you:
 
-### Workout routine - real world example
+> *a sequence of actions regularly followed; a fixed program.*
+
+### Example exercise routine
 
 When working out we normally do the following.  Or at least we should.
 
@@ -27,27 +29,20 @@ When working out we normally do the following.  Or at least we should.
 2. workout
 3. cool down
 
-If I for instance leave out warming up, I could tear a muscle. If I don't cool down, you can cause blood to pool in in the lower extermities, this might cause you to faint. As a result, it's importatnt that the above steps are followed in order.
+If I for instance leave out warming up, I could tear a muscle. 
+If I don't cool down, it can cause blood to pool in in the lower extremeties, this might cause you to faint. As a result, it's important that the above steps are followed in order.
 
-So the above template for a run might look like
+So the template for a run might look like
 
-#### Warm up
+1. **Warm up**
+    * Stretch
+2. **Workout**
+    * Run!
+3. **Cool down**
+    * Brisk walking
+    * Stretch
 
-1. Chest
-2. Quads
-3. Calves
-
-#### Workout
-
-* Run!
-
-#### Cool down
-
-1. Brisk walking
-2. Same stretches as above
-2. Foam rolling
-
-## How does it work?
+## The code
 
 There are 2 steps to implementing this pattern
 
@@ -60,9 +55,7 @@ There are 2 steps to implementing this pattern
 You define a "template" or skeleton of how your class is going to work.
 Typically in Object Oriented terms this means defining an *abstract class*
 
-Anything that is common to all implementations are defined and if required, implemented within the abstract class.
-
-When writing software you've hopefully heard the phrase ["Don't repeat yourself"](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). The template pattern is something that helps you achieve maintain this principle.  
+Anything that is common to all implementations is defined in the abstract class and if implemented if possible.
 
 For example we could define the template as
 
@@ -82,10 +75,9 @@ abstract class ExerciseRoutine() {
 }
 ```
 
-Everything that is common to the template or routine is defined in the method `exercise`
+The structure of the template is defined in the method `exercise` This template will now be inherited by all sub classes.
 
 Now for the implementation.
-
 
 ### Implement the variation
 
@@ -113,7 +105,9 @@ class RunningExercise(private val runner: Runner) : ExerciseRoutine() {
 
 The only real complexity above, is determining how many minutes to Walk versus how many to stretch again. That's not really the part to focus on, and I'm sure you can think of a better way than what I chose.
 
-The takeway here is that we've defined a set of instructions that will be executed in order. For example our main code would now look like:
+The takeway here is that we've defined an ordered executable  *routine*.
+
+For example our client code would now look like:
 
 ```kotlin
 class Main() {
@@ -125,12 +119,20 @@ class Main() {
 }
 ```
 
-This is demonstrating a key design principle of *encapsulate what varies* what varies here is how a runner exercises. However, what doesn't vary is the order that it is done in. This is defined in our abstract class (the template).
+Our implementing class `RunningExercise` is demonstrating a key design principle of *encapsulate what varies* what varies here is how a runner exercises. 
+However, what doesn't vary is the order that it is done in. This is defined in our abstract class (the template).
+
 
 ## Conclusion
 
-I find the Template Pattern a good starter for learning about design patterns. It is relatively easy to understand yet provides powerful capabilities.
-For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns. They also explain further opportunities in the template pattern such as introducing hooks, where you can provide a no-op method that a sub class can optionally override. Thereby allowing you to create clasess that may or may not perform a particular operation.
+I find the Template Pattern a good starter for learning about design patterns. 
+It is relatively easy to understand yet provides powerful capabilities.
+
+For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns.  I've read other ones but I always come back to these two.
+
+They explain further ideas in the template pattern such as introducing hooks, where you can define a method that a sub class can optionally override. 
+Allowing you to create clasess that may or may not perform a particular operation. Depending on the complexity of what you're trying to model, you can introduce conditional checks and member variables that are also inherited.
+
 
 ## References
 

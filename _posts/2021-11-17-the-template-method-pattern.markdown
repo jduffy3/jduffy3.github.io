@@ -166,12 +166,12 @@ It is relatively easy to understand yet provides powerful capabilities.
 For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns.
 I've read other ones but I always come back to these two.
 
-In the books they further explain other concepts within the template pattern like introducing hooks, where you define a method that a sub class can optionally override. 
+In the books, they explain other concepts within the template pattern such as hooks. Where you define a method that a sub class can optionally override. 
 
 The possible implementations are as endless as the variations of this pattern you'll see in the wild! 
 
-The above code example is by no means definitive. 
-The takeaway is not really the implementation of the Design Pattern but being able to recognize the pattern itself. 
+The takeaway is not necessarily the implementation of the Design Pattern itself, but being able to recognize the pattern and implement it when needed. 
+In your journey as a developer you may have to navigate a large codebase, or design a solution to some problem. Being able to identify these patterns reduces your cognitive load, implementing them when appropriate, hopefully pushes you to a more elegant solution!
 
 ## References
 

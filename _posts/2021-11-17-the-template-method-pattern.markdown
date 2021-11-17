@@ -137,7 +137,7 @@ class RunningExercise(warmup: Minutes, workout: Minutes, coolDown: Minutes) : Ex
 
 The only real complexity above is determining how many minutes to walk versus how many to stretch, but that's not the part to focus on (and I'm sure you can think of a better way than what I did!).
 
-The main thing is our template (skeleton) method *routine* has defined the steps. 
+The main thing is our template (skeleton) method `routine` has defined the steps. 
 How those steps are performed is delegated to the `RunningExercise` class.
 
 We're now demonstrating two design principles

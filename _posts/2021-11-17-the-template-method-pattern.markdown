@@ -153,8 +153,8 @@ We can run the above as:
 ```kotlin
 fun main() {
     val joe = Person("Joe")
-    val aRun = RunningExercise(10, 45, 15)
-    joe.perform(aRun)
+    val exercise = RunningExercise(10, 45, 15)
+    joe.perform(exercise)
 }
 ```
 

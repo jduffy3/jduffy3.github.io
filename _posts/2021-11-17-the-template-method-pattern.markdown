@@ -34,12 +34,13 @@ When working out we normally do the following. Or at least we should!
 3. cool down
 
 If I forget to warm up, I could tear a muscle.
-If I don't cool down, it can cause blood to pool in in the lower extremeties, and faint. 
+If I don't cool down, it can cause blood to pool in in the lower extremeties, and I faint. 
 As a result, it's important that the above steps are followed in order.
 
 The above is our template!
 
-How about we go for a run? Described in terms of our template it could be:
+So without fainting, let's go for a run! 
+In terms of our template it could be:
 
 1. **Warm up**
     * Stretch
@@ -63,11 +64,11 @@ There are 2 steps to implementing this pattern
 
 You define the template (skeleton) of your method (operation) in an *abstract class* (since this is a class behavioral pattern).
 
-Our template could look like:
+How about:
 
 ```kotlin
-abstract class ExerciseRoutine(private val warmupTime: Int, private val workoutTime: Int, private val coolDownTime: Int) {
-    //this is our template method
+typealias Minutes = Int
+abstract class ExerciseRoutine(private val warmupTime: Minutes, private val workoutTime: Minutes, private val coolDownTime: Minutes) {
     fun routine(person: Person) {
 
         warmup(person, warmupTime)
@@ -77,64 +78,29 @@ abstract class ExerciseRoutine(private val warmupTime: Int, private val workoutT
         coolDown(person, coolDownTime)
     }
 
-    abstract fun warmup(person: Person, time: Int)
-    abstract fun workout(person: Person, time: Int)
-    abstract fun coolDown(person: Person, time: Int)
+    abstract fun warmup(person: Person, time: Minutes)
+    abstract fun workout(person: Person, time: Minutes)
+    abstract fun coolDown(person: Person, time: Minutes)
 }
 ```
 
-Now for the implementation.
+We've defined our template (skeleton) method in terms of a Person. 
+We want to make sure they are warmed up, worked out and cooled down!
+The constructor accepts 3 parameters that define how long each step should last (minutes).
 
-### Encapsulate what varies
-
-Now's the time to implement the above abstract class. It could look like:
-
-```kotlin
-class RunningExercise(warmup: Int, workout: Int, coolDown: Int) : ExerciseRoutine(warmup, workout, coolDown) {
-
-    override fun warmup(person: Person, time: Int) {
-        person.stretch(time)
-    }
-
-    override fun workout(person: Person, time: Int) {
-        person.run(time)
-    }
-
-    override fun coolDown(person: Person, time: Int) {
-        val walkTime = if(time % 2 != 0) (time + 1) / 2 else time / 2
-        person.briskWalk(walkTime)
-
-        val stretchTime = time - walkTime
-        person.stretch(stretchTime);
-    }
-```
-
-The only real complexity above, is determining how many minutes to walk versus how many to stretch. 
-That's not really the part to focus on, and I'm sure you can think of a better way than what I did!
-
-The key takeway is that we've defined a fixed order of how something is performed in the `RunningExercise` class.
-We are also demonstrating two design principles
-* Encapsulate what varies
-* [Don't repeat yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
-
-What varies is *what* exercise a person is doing (i.e. Running). Developers can add new exercises and be sure they align to the template defined in the `ExerciseRoutine` class.
-
-What isn't duplicated is the order the steps are done in. This is defined in our *routine* method (the template).
-
-
-The only thing missing now is the Person class. 
+But what is a Person? Let's define that now:
 
 ```kotlin
 class Person(private val name: String) {
-    fun run(time: Int){
+    fun run(time: Minutes){
         println("$name is running for $time minutes!")
     }
 
-    fun briskWalk(time: Int){
+    fun briskWalk(time: Minutes){
         println("$name is walking briskly for $time minutes!")
     }
 
-    fun stretch(time: Int) {
+    fun stretch(time: Minutes) {
         println("$name is stretching for $time minutes!")
     }
 
@@ -144,7 +110,45 @@ class Person(private val name: String) {
 }
 ```
 
-We could execute the above as:
+We still need to go for a run though.
+
+### Encapsulate what varies - going for a run
+
+```kotlin
+class RunningExercise(warmup: Minutes, workout: Minutes, coolDown: Minutes) : ExerciseRoutine(warmup, workout, coolDown) {
+
+    override fun warmup(person: Person, time: Minutes) {
+        person.stretch(time)
+    }
+
+    override fun workout(person: Person, time: Minutes) {
+        person.run(time)
+    }
+
+    override fun coolDown(person: Person, time: Minutes) {
+        val walkTime = if(time % 2 != 0) (time + 1) / 2 else time / 2
+        person.briskWalk(walkTime)
+
+        val stretchTime = time - walkTime
+        person.stretch(stretchTime);
+    }
+}
+```
+
+The only real complexity above is determining how many minutes to walk versus how many to stretch. 
+That's not really the part to focus on, and I'm sure you can think of a better way than what I did!
+
+The key takeway is that our abstract class template (skeleton) method *routine* has defined the steps. 
+How those steps are performed is delegated to the `RunningExercise` class.
+
+We're now demonstrating two design principles
+* Encapsulate what varies
+* [Don't repeat yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
+
+What varies is *what* exercise a person is doing (i.e. Running). Developers can add new exercises and only concern themselves with what is performed.
+What isn't duplicated is the order the steps are done in. This is defined in our *routine* method (the template).
+
+We can run the above as:
 
 ```kotlin
 fun main() {
@@ -154,8 +158,6 @@ fun main() {
 }
 ```
 
-With the above code we can be sure that people are performing exercises correctly and our developers can easily add new exercises to the application!
-
 ## Conclusion
 
 I find the Template Method Pattern a good starter for learning about Design Patterns. 
@@ -164,10 +166,12 @@ It is relatively easy to understand yet provides powerful capabilities.
 For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns.
 I've read other ones but I always come back to these two.
 
-They explain further ideas in the template pattern such as introducing hooks, where you can define a method that a sub class can optionally override. 
-This allows you to create clasess that may or may not perform a particular operation. Depending on the complexity of what you're trying to model, you can introduce conditional checks and member variables that are also inherited. The possible implementations are as numerous as the variations of this pattern you'll see in the wild! Again, the takeaway is not the implementation above but the pattern itself.
+In the books they go further eo explain other ideas in the template pattern such as introducing hooks, where you define a method that a sub class can optionally override. 
+This allows you to create clasess that may or may not perform a particular operation. 
+Depending on the complexity of what you're trying to model, you can introduce conditional checks and member variables that are also inherited. 
+The possible implementations are as endless as the variations of this pattern you'll see in the wild! 
 
-I would highly recommend reading (and re-reading) them! The above code example is by no means definitive, in fact you might argue with me the [Strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern) would be better suited here, and you *could* be right! The takeaway is recognizing the pattern.
+The above code example is by no means definitive. In fact, you might argue with me the [Strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern) would be better suited here, and you *could* be right! The takeaway is not really the implementation of the Design Pattern but being able to recognize the pattern itself. 
 
 ## References
 

@@ -6,7 +6,7 @@ A class behavioral design pattern.
 
 ## Seriously, what is it?
 
-Templates live among us everywhere. They are a set of instructions that define how something is done. If you've ever tried following a recipe or tutorial, congratulations, you've come across the template method pattern! 
+Templates live among us everywhere. They are a set of instructions that describe how something is done. If you've ever tried following a recipe or tutorial, congratulations, you've come across the template method pattern! 
 
 The [Gang of Four](http://wiki.c2.com/?GangOfFour) describe it as:
 
@@ -17,7 +17,7 @@ Real world examples of the template method pattern could be:
 * Morning routine
 * Exercise routine
 
-When writing, I try to be mindful of duplcation. Generally, I wouldn't  like seeing the word routine duplicated above in the examples. 
+When writing, I try to be mindful of duplcation. Generally, I wouldn't like seeing the word routine duplicated above in the examples. 
 However, I think it serves quite well in explaining the template pattern, because the definition of [routine](https://www.lexico.com/en/definition/routine) reinforces the intent of the pattern:
 
 > *a sequence of actions regularly followed; a fixed program.*

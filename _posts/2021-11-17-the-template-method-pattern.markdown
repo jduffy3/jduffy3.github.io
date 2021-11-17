@@ -170,7 +170,8 @@ In the books they further explain other concepts within the template pattern lik
 
 The possible implementations are as endless as the variations of this pattern you'll see in the wild! 
 
-The above code example is by no means definitive. In fact, you might argue with me the [Strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern) would be better suited here, and you *could* be right! The takeaway is not really the implementation of the Design Pattern but being able to recognize the pattern itself. 
+The above code example is by no means definitive. 
+The takeaway is not really the implementation of the Design Pattern but being able to recognize the pattern itself. 
 
 ## References
 

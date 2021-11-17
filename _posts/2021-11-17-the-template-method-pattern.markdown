@@ -135,13 +135,13 @@ class RunningExercise(warmup: Minutes, workout: Minutes, coolDown: Minutes) : Ex
 }
 ```
 
-The only real complexity above is determining how many minutes to walk versus how many to stretch. 
-That's not really the part to focus on, and I'm sure you can think of a better way than what I did!
+The only real complexity above is determining how many minutes to walk versus how many to stretch, but that's not the part to focus on (and I'm sure you can think of a better way than what I did!).
 
-The key takeway is that our abstract class template (skeleton) method *routine* has defined the steps. 
+The main thing is our template (skeleton) method *routine* has defined the steps. 
 How those steps are performed is delegated to the `RunningExercise` class.
 
 We're now demonstrating two design principles
+
 * Encapsulate what varies
 * [Don't repeat yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
 
@@ -152,9 +152,9 @@ We can run the above as:
 
 ```kotlin
 fun main() {
-    val person = Person("Joe")
+    val joe = Person("Joe")
     val aRun = RunningExercise(10, 45, 15)
-    person.perform(aRun)
+    joe.perform(aRun)
 }
 ```
 
@@ -166,9 +166,8 @@ It is relatively easy to understand yet provides powerful capabilities.
 For learning about Design Patterns the two most important books I've read (and re-read) are the classic GoF book and Head First series on Design Patterns.
 I've read other ones but I always come back to these two.
 
-In the books they go further eo explain other ideas in the template pattern such as introducing hooks, where you define a method that a sub class can optionally override. 
-This allows you to create clasess that may or may not perform a particular operation. 
-Depending on the complexity of what you're trying to model, you can introduce conditional checks and member variables that are also inherited. 
+In the books they further explain other concepts within the template pattern like introducing hooks, where you define a method that a sub class can optionally override. 
+
 The possible implementations are as endless as the variations of this pattern you'll see in the wild! 
 
 The above code example is by no means definitive. In fact, you might argue with me the [Strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern) would be better suited here, and you *could* be right! The takeaway is not really the implementation of the Design Pattern but being able to recognize the pattern itself. 

@@ -6,41 +6,37 @@ A class behavioral design pattern.
 
 ## Seriously, what is it?
 
-Templates live among us everywhere. They are a set of instructions that describe how something is done. If you've ever tried following a recipe or tutorial, congratulations, you've come across the template method pattern! 
+Templates live among us everywhere. 
+They are a set of instructions that describe how something is done. 
+If you've ever tried following a recipe or tutorial, congratulations, you've come across the template method pattern! 
 
 The [Gang of Four](http://wiki.c2.com/?GangOfFour) describe it as:
 
 > *The skeleton of an algorithm in an operation, defferring some steps to subclasses. Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithms structure.*
 
-Real world examples of the template method pattern could be:
-
-* Morning routine
-* Exercise routine
-
-Generally, I wouldn't like seeing the word routine duplicated above in the examples. 
-However, I think it serves quite well in explaining the template pattern, because the definition of [routine](https://www.lexico.com/en/definition/routine) reinforces the intent of the pattern:
+Real world examples of the template method could be a routine you have. 
+For example, your morning routine or your exercise routine, etc.
+Even the definition of the word [routine](https://www.lexico.com/en/definition/routine) lends itself nicely to reinforcing the intent of this pattern:
 
 > *a sequence of actions regularly followed; a fixed program.*
 
-
-So lets work with the Exercise example...
+With that out of the way, we can use explore further using an Exercise routine as an example.
 
 ### Example exercise routine
 
-When working out we normally do the following. Or at least we should!
+When working out we normally follow 3 steps. 
 
 1. warm up
 2. workout
 3. cool down
 
-If I forget to warm up, I could tear a muscle.
-If I don't cool down, it can cause blood to pool in in the lower extremeties, and I faint. 
+If I forget to warm up, I could tear a muscle when I'm working out.
+If I don't cool down afterwards, it can cause blood to pool in in the lower extremeties, and I faint. 
 As a result, it's important that the above steps are followed in order.
 
-The above is our template!
+These steps are our template!
 
-So without fainting, let's go for a run! 
-In terms of our template it could be:
+So without fainting, let's say a run entails:
 
 1. **Warm up**
     * Stretch
@@ -50,7 +46,7 @@ In terms of our template it could be:
     * Brisk walking
     * Stretch
 
-Alright, code it!
+We can now encapsulate this with the Template Method!
 
 ## The code
 
@@ -110,7 +106,7 @@ class Person(private val name: String) {
 }
 ```
 
-We still need to go for a run though.
+We still need to go for a run though...
 
 ### Encapsulate what varies - going for a run
 
@@ -135,7 +131,7 @@ class RunningExercise(warmup: Minutes, workout: Minutes, coolDown: Minutes) : Ex
 }
 ```
 
-The only real complexity above is determining how many minutes to walk versus how many to stretch, but that's not the part to focus on (and I'm sure you can think of a better way than what I did!).
+The only complexity above is determining how many minutes to walk versus how many to stretch, but that's not the part to focus on (and I'm sure you can think of a better way than what I did!).
 
 The main thing is our template (skeleton) method `routine` has defined the steps. 
 How those steps are performed is delegated to the `RunningExercise` class.
@@ -170,8 +166,9 @@ In the books, they explain other concepts within the template pattern such as ho
 
 The possible implementations are as endless as the variations of this pattern you'll see in the wild! 
 
-The takeaway is not necessarily the implementation of the Design Pattern itself, but being able to recognize the pattern and implement it when needed. 
-In your journey as a developer you may have to navigate a large codebase, or design a solution to some problem. Being able to identify these patterns reduces your cognitive load, implementing them when appropriate, hopefully pushes you to a more elegant solution!
+So the takeaway is not just being able to implement the Design Pattern itself, but also recognizing it within a codebase.
+In your journey as a developer you may have to navigate a large codebase, or design a solution to some problem. 
+Being able to identify these patterns reduces your cognitive load and implementing them when appropriate, hopefully drives you toward a more elegant solution!
 
 ## References
 

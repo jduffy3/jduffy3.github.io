@@ -16,64 +16,99 @@ Smells like you need the Strategy pattern when:
 * Multiple conditional statements in your methods
 * The algorithm (behavior) uses data that clients (classes) shouldn't know about.
 
-## WTH does that mean?
+## Seriously, what is it?
 
-Usually class based design patterns implement themselves via inheritance. 
-Object based design patterns [favor composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
-You might have heard heard your co-workers say this a million times. It's a key design principle in OO.
+Class based design patterns implement themselves via inheritance. 
+Object based design patterns ["favor composition over inheritance"](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+You might have heard heard your co-workers say that last part of that sentence a million times. It's a key design principle in OO.
 
-> Favor composition over inheritance
+> *Favor composition over inheritance*
 
 By favoring composition over inheritance you allow for more *flexibility*. 
-Inheritance can become a tricky beast to tame. 
-You should also strive to not violate the [Liskov Substitution Principle](https://en.wikipedia.org/wiki/Liskov_substitution_principle). 
-In some other languages you might even fall prey to the [diamond of death](https://en.wikipedia.org/wiki/Multiple_inheritance). 
-But I'd rather not go down that rabbit hole here...
+Inheritance, if not designed correctly can cause some issues like:
 
-But that still doesn't get me out of not talking about composition over inheritance.
+* Violate the [Liskov Substitution Principle](https://en.wikipedia.org/wiki/Liskov_substitution_principle). 
+* In some languages, the dreaded [diamond of death](https://en.wikipedia.org/wiki/Multiple_inheritance). 
+
+But why *favor composition*?
+
+### Composition
 
 Inheritance is referred to as *white-box reuse*. 
-This is because the internals are often times visible to subclasses due to inheritance, this increases the possibility of breaking encapsulation. 
-By inheriting from a class you have access to member variables and overriding functions you might not have originally intended when designing your parent class.
-The subclass is so coupled to the parent class, that any change in the paren can force the subclass to change.
+This is because the internals are visible to subclasses, this breaks encapsulation. 
+Why? By inheriting from a class you have access to member variables and can override functions you the author might not have intended others to do.
+Inheritance couples the subclass to the parent class, so any change in the parent class can force the subclass to change. This potentially breaks encapsulatuion and our goal is to not break anything!
 
-*Black-box reuse* is often referred to as composition. 
-This is because no internal details of objects are visible and so objects are accesssed through their interfaces only. 
-This is a good thing because it doesn't break encapsulation and is a design principle known as:
+*Black-box reuse* is referred to as composition because internal details of objects are hidden. Details are accesssed through their interfaces only. 
+This is a good thing because it doesn't break encapsulation and is related to the design principle: 
 
-> program to interfaces, not implementations
+> *Program to interfaces, not implementations*
 
-I think that's good enough to know for now. Let's show some code.
+So in essence, dividing responsibilities across separate class hierarchies, we favor composition over inheritance.
+We are drawing a boundary that separates what changes from what stays the same and preserving encapsulation.
+Anything that a class wants others to know is exposed through its interface (or at least should be!).
+
+Let's try and illustrate this concept with code.
 
 ## Code
 
-Let's say we're building a game. Our client wants an online game where people can meet and interact.
-In the game there are a few NPC characters.
-Some characters are nice and agreeable and others are not. It can depend on their mood or the type of character they are.
+Let's say we're building a game. 
+Our client wants game where people can meet and interact.
+Some characters are nice and agreeable and others are not. 
+It can depend on their mood or the type of character they are.
+Just like in the real world, moods can change. Already when hearing something can change, this is the time to note you want to encapsulate everything around that.
 
+In relation to the Strategy Pattern lets encapsulate that.
 
-Some people in the game are 
- game where people interact with one another.
-In the game, people have names. Some people are nice, some people are not nice. 
-Nice people do favors for someThey do favors for others and have moods like we do.
+```kotlin
+class Person(val name: String, private var: mood: Mood) {
 
-### Bad Idea
+  fun say(sentence: String) {
+    println(sentence)
+    mood.express()
+  }
 
+  fun greet() {
+    say("Hi, my name is $name")
+  }
 
-### Good Idea
+  fun gratitude() {
+    say("Thank you")
+  }
+
+  fun endConversation() {
+    say("Goodbye")
+  }
+
+  fun change(mood: Mood) {
+    this.mood = mood
+  }
+}
+
+interface Mood {
+  fun express()
+}
+
+class Excited : Mood {
+  fun express() {
+    println("Yay!!!")
+  }
+}
+```
 
 ## Conclusion
 
-The Strategy Pattern is probably simpler to understand than the [Template Method]({% post_url 2021-11-17-the-template-method-pattern %}).
-It's the first pattern in the Head First series and demonstrates fundamental OO principles I try to keep in mind whenever writing software.
-
-If anything remember
+The Strategy Pattern may be simpler to understand compared to the [Template Method]({% post_url 2021-11-17-the-template-method-pattern %}) 
+it's the first pattern in the Head First series and demonstrates fundamental OO principles one should always keep in mind:
 
 > Encapsulate what varies
 
 > Favor composition over inheritance
 
 > Program to interfaces, not implementations
+
+The Template Method may be easier to spot in the wild compared to Strategy as it's statically defined.
+However, Strategy can offer a lot more flexibility in design-time as well as run-time.
 
 ## References
 

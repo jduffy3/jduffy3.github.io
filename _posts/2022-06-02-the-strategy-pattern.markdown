@@ -2,53 +2,53 @@
 
 ## What is it?
 
-An object based, behavioral design pattern where the intent is to:
+An object based, behavioral design pattern with the intent to:
 
 > *"Define a family of algorithms, encapsulate each one, and make them interchangeable"*
 
-### [What does that mean?](https://www.youtube.com/watch?v=KsXfMU9oloQ)
+## What does that mean?
 
-When reading the GoF's Design Patterns book, it's important to understand *Class based* design patterns mean they are implemented through inheritance.
+When reading the GoF's Design Patterns book the authors distinguish *Class* and *Object* based patterns. 
+Class based behavioral patterns are typically implemented via inheritance, while Object based patterns use composition. 
 
-*Object based* design patterns on the other hand, are implemented with composition and help enforce a key design priniciple: 
+This also introduces a key design priniciple: 
 > [*"Favor composition over inheritance."*](https://en.wikipedia.org/wiki/Composition_over_inheritance)
 
-It's one of many design principles in OO and it might be something you hear so often, it can be easy to just accept the phrase itself and not understand it.
+### Why favor composition over inheritance?
 
-#### Why favor composition over inheritance?
+First, let's discuss inheritance.
 
-Let's get inheritance out of the way first.
+Inheritance is referred to as *white-box reuse* because a classes internals are visible to subclasses.
+They are visible because they are defined *within* a family of hierarhcies.
+However, this can lend itself to breaking encapsulation.
 
-Inheritance is referred to as *white-box reuse* because the internals are visible to subclasses. 
-This can lend itself to breaking encapsulation. 
+How? 
 
-Why? 
+1. By inheriting from a class, you have the potential to override member variables and methods the author might not have intended others to do.
+2. Inheritance *couples* a subclass to it's parent class. Any change in the parent class can then force the subclass to change. 
 
-* By inheriting from a class, you have access to override member variables and functions (implementations) the author might not have intended others to do. 
-* Inheritance *couples* the subclass to the parent class, so not only can your changes break encapsulation. Any change in the parent class can force the subclass to change, making it easier to break encapsulation again, or violate the [Open Closed Principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle).
-* If not designed correctly can violate the [Liskov Substitution Principle](https://en.wikipedia.org/wiki/Liskov_substitution_principle). 
-* In some languages, create the dreaded [diamond of death](https://en.wikipedia.org/wiki/Multiple_inheritance). 
+#### Composition
 
-Meanwhile in composition land...
+Composition is sometimes referred to as [*black-box reuse*](http://www.cs.unc.edu/~stotts/GOF/hires/chapAfso.htm). This is because the internal details of objects are hidden. This helps preserve encapsulation. 
 
-Composition can be referred to as [*black-box reuse*](http://www.cs.unc.edu/~stotts/GOF/hires/chapAfso.htm) because the internal details of objects are hidden. This helps prevent yourself and others from breaking encapsulation and lends itself to another design principle: 
+How?
 
-> *Program to interfaces, not implementations.*
+Responsibilities are divided *across* class hierarchies.
+Because these responsibilities are divided across hierarchies classes don't have access to another classes internal details. 
+Anything that is accessible is because the author has exposed it through the classes public interface.
+This is safer than inheritance because the potential to override members that the author may not have intended others to do could lead to unintened consequences.
 
-Through composition, responsibilities are divided across separate class hierarchies separating what can change from what stays the same. Encapsulation is preserved through these hierarchies.
-Anything that a class wants others to know is accessible through its interface only, in contrast to inheritance, where being able to override is potentially permitted. 
+While separating class hierarchies might sound restrictive, it really affords the developer *flexibility*.  
+In the Strategy pattern, this is the flexibility to change a classes behavior. 
+Or as the patterns definition puts so succinctly "*define a family of algorithms, encapsulate each one, and make them interchangeable*".
 
-Separating class hierarchies might sound restrictive but in fact, it's really affording the developer *flexibility*.  
-In regards to the Strategy pattern, this flexibility is being able to change a classes behavior. Or as defined by GoF in it's intent "*define a family of algorithms, encapsulate each one, and make them interchangeable*".
+### When would I use the Strategy pattern?
 
-### When would I use it the Strategy pattern?
-
-You might consider using the Strategy pattern when:
+You might consider the Strategy pattern when:
 
 * Related classes differ only in their behavior. If so, break each behavior out into its own *Strategy* class.
 * There are multiple conditional statements in your methods. Instead, move conditional branches into their own *Strategy* class.
 * The algorithm (behavior) uses data that clients (classes) shouldn't know about. Use the strategy pattern to enforce / protect encapsulation.
-
 
 Let's try and illustrate this pattern in code, first demonstrating how one might approach it via Inheritance.
 
@@ -57,7 +57,7 @@ Let's try and illustrate this pattern in code, first demonstrating how one might
 Let's say we're building a game.
 Our client wants a game where people can meet and greet each other.
 Some characters are nice and agreeable, others are not. 
-This behavior is not static though. Just like in the real world, our moods change and can influence how character greets someone.
+This behavior is not static though. Just like in the real world, our moods change and can influence how a character greets someone.
 
 
 ### via Inheritance (bad idea)
@@ -98,7 +98,9 @@ Keanu: Hi Scrooge. Nice to meet you.
 Scrooge: What do you want?
 ```
 
-It works. But the implemenation doesn't really capture how people greet each other. Moods are dynamic to people and influence how we greet each other. If we wanted to change Scrooge to be a `NicePerson` we'd have to construct them all over again. We'd even have to modify the variable `scrooge` to be a `var` instead of `val`. What I like about Kotlin, is that it now forces us to declare `scrooge` as the type `Person`. In Java, we always declare our types and this would've been the norm, but in this instance, to me, things are starting to smell.
+It works... But the implemenation doesn't really capture how people greet each other. Moods are dynamic and influence how we greet each other. If we wanted Scrooge to be a `NicePerson` we'd have to construct him all over again, however, Scrooge isn't being reborn we're just trying to change behavior! 
+If we wanted to re-construct Scrooge, Kotlin would forces us to write our code a little differently. We'd have to modify the variable `scrooge` to be a `var` instead of `val` declare `scrooge` as the type `Person`. 
+In Java, we always declare our types and this would've been the norm, but in this instance, to me, it fells like Kotlin is trying to tell us things are starting to smell.
 
 e.g.
 
@@ -107,11 +109,16 @@ fun main() {
     var scrooge: Person = MeanPerson("Scrooge")
     scrooge.greet(NicePerson("Keanu"))
 
+    //Is this the same scrooge? If we had other state we were interested in, this would be gone!
     scrooge = NicePerson("Scrooge")
 }
 ```
 
 ### via Composition (the Strategy pattern good idea)
+
+With the inheritance example above, we had a Person class and all it's implementations were a Subclass of Person. If it was a more complex class and we were trying to add more behavior the risk of subclasses introducing changes that weren't orignally designed could make this a nightmare to maintain. This is also demonstrating that all classes are *within* a familiy of hierarchies.
+
+Approaching this from the perspective of composition, we will now divide responsibility *across* class hierarchies by defining two class hierarchies *Person* and *Greeter*. This will help keep all things Greet related separate from all things Person related and help protect us from breaking encapsulation
 
 ```kotlin
 class Person(val name: String, private var greeter: Greeter){
@@ -137,10 +144,10 @@ class Mean: Greeter {
 }
 ```
 
-With the above the output is no different. 
-But now, we've made things more *flexible*. We have injected the behavior (the Strategy *`Greeter`*) through the constructor via composition. 
+Although the output is the same as before, things are different for the developer. We've made the design more *flexible*. We achieved this by injecting the behavior (i.e. *`Greeter`* strategy) through the constructor via composition. 
 
-With a few more changes, we can add another method *`change`* that takes in a *`Greeter`* and updates the member variable via method composition. This enables us to change the *behavior* (family of algorithm) during runtime.
+
+We can demonstrate this fliexibility if we add another method *`change`* that takes a *`Greeter`* via method composition. This enables us to change the *behavior* (family of algorithm) during runtime.
 
 ```kotlin
 fun main() {
@@ -189,7 +196,7 @@ class Mean: Greeter {
 }
 ```
 
-The output now looks like 
+The output now shows...
 
 ```
 Keanu: Hi Scrooge. Nice to meet you.
@@ -208,7 +215,7 @@ With the above we've now done the following:
 * Encapsulated each one (`Mean`, `Nice`)
 * Made them interchangable (via method and constructor injection)
 
-That is the definition of the strategy pattern!
+This is the definition of the strategy pattern!
 
 ### Other thoughts
 

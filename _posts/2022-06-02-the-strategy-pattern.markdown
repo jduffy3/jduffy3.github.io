@@ -2,45 +2,46 @@
 
 ## What is it?
 
-An object based, behavioral design pattern with the intent to:
+An object based, behavioral design pattern to:
 
 > *"Define a family of algorithms, encapsulate each one, and make them interchangeable"*
 
 ## What does that mean?
 
-When reading the GoF's Design Patterns book the authors distinguish *Class* and *Object* based patterns. 
-Class based behavioral patterns are typically implemented via inheritance, while Object based patterns use composition. 
+In the GoF's Design Patterns book the authors distinguish between *Class* and *Object* based patterns. 
+Class based behavioral patterns are implemented with inheritance, while Object based patterns favor composition. 
 
-This also introduces a key design priniciple: 
+One principle of OOD is to:
 > [*"Favor composition over inheritance."*](https://en.wikipedia.org/wiki/Composition_over_inheritance)
 
 ### Why favor composition over inheritance?
 
-First, let's discuss inheritance.
-
-Inheritance is referred to as *white-box reuse* because a classes internals are visible to subclasses.
-They are visible because they are defined *within* a family of hierarhcies.
-However, this can lend itself to breaking encapsulation.
+Inheritance is referred to as *white-box reuse* because a classes internals are visible to their subclasses.
+Classes are defined *within* a family of hierarhcies that extend a common parent class, and while it can help keep things DRY, inheritance can expose a parents implementation details to it's subclass which has led to some arguing ["inheritance breaks encapsulation"](https://www.cs.tufts.edu/comp/150CBD/readings/snyder86encapsulation.pdf).
 
 How? 
 
 1. By inheriting from a class, you have the potential to override member variables and methods the author might not have intended others to do.
-2. Inheritance *couples* a subclass to it's parent class. Any change in the parent class can then force the subclass to change. 
+2. Inheritance *couples* a subclass to it's parent class. Any change in the parent class can force its subclasses to change. If this change is not applicable to a subclass (e.g. implementing a no-op is a typical smell, or throwing an exception for an "unsupported method") can be a violation of the [Interface Segregation Principle](https://en.wikipedia.org/wiki/Interface_segregation_principle) which states "no code should be forced to depend on methods it does not use". 
+3. In some languages, sub classes can shadow parent class variables and introduce errors into the system.
+
+The above is not intended to discourage the use of inheritance but to highlight some of the potential problems that can surface if used incorrectly.
 
 #### Composition
 
-Composition is sometimes referred to as [*black-box reuse*](http://www.cs.unc.edu/~stotts/GOF/hires/chapAfso.htm). This is because the internal details of objects are hidden. This helps preserve encapsulation. 
+Composition is referred to as [*black-box reuse*](http://www.cs.unc.edu/~stotts/GOF/hires/chapAfso.htm) because an objects internal details are hidden.
+This helps preserve encapsulation by removing exposure to implementation details. 
 
 How?
 
-Responsibilities are divided *across* class hierarchies.
-Because these responsibilities are divided across hierarchies classes don't have access to another classes internal details. 
-Anything that is accessible is because the author has exposed it through the classes public interface.
-This is safer than inheritance because the potential to override members that the author may not have intended others to do could lead to unintened consequences.
+Responsibilities are divided *across* class hierarchies, and so classes don't have access to the internal details of other classes.
+Anything that is accessible to clients, is because it has been explicitly exposed through it's public facing interface, adhering (in a sense) to another design principle:
 
-While separating class hierarchies might sound restrictive, it really affords the developer *flexibility*.  
-In the Strategy pattern, this is the flexibility to change a classes behavior. 
-Or as the patterns definition puts so succinctly "*define a family of algorithms, encapsulate each one, and make them interchangeable*".
+> *Program to interfaces, not implementations*
+
+By programming to an interface, your clients are depending on abstractions (or should be!). This provides you, the developer, the flexibility to change implementation details and not have to worry about breaking existing contracts with those clients. 
+
+In relation to the Strategy pattern, this flexibility is the ability to change a classes behavior.
 
 ### When would I use the Strategy pattern?
 
@@ -48,59 +49,63 @@ You might consider the Strategy pattern when:
 
 * Related classes differ only in their behavior. If so, break each behavior out into its own *Strategy* class.
 * There are multiple conditional statements in your methods. Instead, move conditional branches into their own *Strategy* class.
-* The algorithm (behavior) uses data that clients (classes) shouldn't know about. Use the strategy pattern to enforce / protect encapsulation.
+* An algorithm (behavior) uses data that clients (classes) shouldn't know about. Use the Strategy pattern to enforce / protect encapsulation.
 
 Let's try and illustrate this pattern in code, first demonstrating how one might approach it via Inheritance.
 
 ## Code
 
-Let's say we're building a game.
-Our client wants a game where people can meet and greet each other.
-Some characters are nice and agreeable, others are not. 
-This behavior is not static though. Just like in the real world, our moods change and can influence how a character greets someone.
-
+Imagine our client wants a game where people can meet and greet each other.
+Some characters are nice and others are mean... for the time being.
+This behavior is not static though. Just like in the real world, moods change and can influence how a character greets someone.
 
 ### via Inheritance (bad idea)
 
 ```kotlin
 fun main() {
     val keanu = NicePerson("Keanu")
-    val scrooge = MeanPerson("Scrooge")
-    
-    print("Keanu: ")
-    keanu.greet(scrooge)
+    var scrooge: Person = MeanPerson("Scrooge")
 
-    print("Scrooge: ")
-    scrooge.greet(keanu)
+    println(keanu.greet(scrooge))
+    println(scrooge.greet(keanu))
 }
 
 abstract class Person(val name: String){
-    abstract fun greet(anotherPerson: Person)
+    abstract fun greet(anotherPerson: Person): String
 }
 
 class MeanPerson(name: String): Person(name){
-    override fun greet(anotherPerson: Person) {
-        println("What do you want?")
+    override fun greet(anotherPerson: Person): String {
+        return "I'm $name. What do you want?"
     }
 }
 
 class NicePerson(name: String): Person(name){
-    override fun greet(anotherPerson: Person) {
-        println("Hi ${anotherPerson.name}. Nice to meet you.")
+    override fun greet(anotherPerson: Person): String {
+        return "Hi ${anotherPerson.name}, my name is $name. Nice to meet you."
     }
 }
 ```
 
-This would print the following when we run `main()`
+This prints the following when we run `main()`
 
 ```
-Keanu: Hi Scrooge. Nice to meet you.
-Scrooge: What do you want?
+Hi Scrooge, my name is Keanu. Nice to meet you.
+I'm Scrooge. What do you want?
 ```
 
-It works... But the implemenation doesn't really capture how people greet each other. Moods are dynamic and influence how we greet each other. If we wanted Scrooge to be a `NicePerson` we'd have to construct him all over again, however, Scrooge isn't being reborn we're just trying to change behavior! 
-If we wanted to re-construct Scrooge, Kotlin would forces us to write our code a little differently. We'd have to modify the variable `scrooge` to be a `var` instead of `val` declare `scrooge` as the type `Person`. 
-In Java, we always declare our types and this would've been the norm, but in this instance, to me, it fells like Kotlin is trying to tell us things are starting to smell.
+It works... But the implemenation doesn't really capture how people greet each other. 
+Moods are dynamic and influence how we greet each other. 
+If we wanted Scrooge to be a `NicePerson` we'd have to construct a new instance of `NicePerson`. The only way to do this in Kotlin is to modify the variable `scrooge` to be a `var` instead of `val` and declare `scrooge` as the type `Person`. 
+
+Or we could declare two people with the name "Scrooge" with different moods. But that REALLY doesn't make sense!
+```kotlin
+  // bonkers
+  val meanScrooge = MeanPerson("Scrooge")
+  val niceScrooge = NicePerson("Scrooge")
+```
+
+Either case, we are creating new objects and really we want to change behavior. Creating new objects also means we are losing state. In this case it's just a name which we can easily provide in the constructor however if this was a more complex class and had state that was dynamic to the lifecycle of an object we would lose all of that state! 
 
 e.g.
 
@@ -109,70 +114,66 @@ fun main() {
     var scrooge: Person = MeanPerson("Scrooge")
     scrooge.greet(NicePerson("Keanu"))
 
-    //Is this the same scrooge? If we had other state we were interested in, this would be gone!
+    //If scrooge had other state we were interested in, this would now be gone!
     scrooge = NicePerson("Scrooge")
 }
 ```
 
 ### via Composition (the Strategy pattern good idea)
 
-With the inheritance example above, we had a Person class and all it's implementations were a Subclass of Person. If it was a more complex class and we were trying to add more behavior the risk of subclasses introducing changes that weren't orignally designed could make this a nightmare to maintain. This is also demonstrating that all classes are *within* a familiy of hierarchies.
+In the inheritance example above, we defined an abstract `Person` class and all it's implementations are a subclass of `Person`. 
+This demonstrated classes being defined *within* a familiy of hierarchies. 
 
-Approaching this from the perspective of composition, we will now divide responsibility *across* class hierarchies by defining two class hierarchies *Person* and *Greeter*. This will help keep all things Greet related separate from all things Person related and help protect us from breaking encapsulation
+Approaching this from the perspective of composition, we will now divide the responsibilities *across* two class hierarchies by defining a *Person* class and *Greeter* interface. This will help keep all things Greet related separate from all things Person related.
 
 ```kotlin
 class Person(val name: String, private var greeter: Greeter){
-    fun greet(anotherPerson: Person) {
-        println(greeter.greet(anotherPerson))
+    fun greet(anotherPerson: Person): String {
+        return greeter.greet(this, anotherPerson)
     }
 }
 
 interface Greeter {
-    fun greet(anotherPerson: Person): String
+    fun greet(self: Person, anotherPerson: Person): String
 }
 
 class Nice: Greeter {
-    override fun greet(anotherPerson: Person): String {
-        return "Hi ${anotherPerson.name}. Nice to meet you."
+    override fun greet(self: Person, anotherPerson: Person): String {
+        return "Hi ${anotherPerson.name} my name is ${self.name}. Nice to meet you."
     }
 }
 
 class Mean: Greeter {
-    override fun greet(anotherPerson: Person): String {
-        return "What do you want?"
+    override fun greet(self: Person, anotherPerson: Person): String {
+        return "I'm ${self.name}. What do you want?"
     }
 }
 ```
 
 Although the output is the same as before, things are different for the developer. We've made the design more *flexible*. We achieved this by injecting the behavior (i.e. *`Greeter`* strategy) through the constructor via composition. 
 
-
-We can demonstrate this fliexibility if we add another method *`change`* that takes a *`Greeter`* via method composition. This enables us to change the *behavior* (family of algorithm) during runtime.
+We can demonstrate this fliexibility once more by adding another method *`change`* that takes a *`Greeter`* via method composition. This enables us to change the *behavior* (family of algorithm) during runtime in order to dynamically change a persons mood.
 
 ```kotlin
 fun main() {
     val scrooge = Person("Scrooge", Mean())
     val keanu = Person("Keanu", Nice())
 
-    print("Keanu: ")
-    keanu.greet(scrooge)
-    print("Scrooge: ")
-    scrooge.greet(keanu)
+    println(keanu.greet(scrooge))
+    println(scrooge.greet(keanu))
 
     println("...")
     //changing behavior at run-time
     keanu.change(Mean())
     scrooge.change(Nice())
 
-    print("Keanu: ")
-    keanu.greet(scrooge)
-    print("Scrooge: ")
-    scrooge.greet(keanu)
+    println(keanu.greet(scrooge))
+    println(scrooge.greet(keanu))
 }
 
-class Person(val name: String, var greeter: Greeter){
-    fun greet(anotherPerson: Person ) {
-        println(greeter.greet(anotherPerson))
+class Person(val name: String, private var greeter: Greeter){
+    fun greet(anotherPerson: Person): String {
+        return greeter.greet(this, anotherPerson)
     }
     fun change(greeter: Greeter) {
         this.greeter = greeter
@@ -180,18 +181,18 @@ class Person(val name: String, var greeter: Greeter){
 }
 
 interface Greeter {
-    fun greet(anotherPerson: Person): String
+    fun greet(self: Person, anotherPerson: Person): String
 }
 
 class Nice: Greeter {
-    override fun greet(anotherPerson: Person): String {
-        return "Hi ${anotherPerson.name}. Nice to meet you."
+    override fun greet(self: Person, anotherPerson: Person): String {
+        return "Hi ${anotherPerson.name} my name is ${self.name}. Nice to meet you."
     }
 }
 
 class Mean: Greeter {
-    override fun greet(anotherPerson: Person): String {
-        return "What do you want?"
+    override fun greet(self: Person, anotherPerson: Person): String {
+        return "I'm ${self.name}. What do you want?"
     }
 }
 ```
@@ -199,13 +200,12 @@ class Mean: Greeter {
 The output now shows...
 
 ```
-Keanu: Hi Scrooge. Nice to meet you.
-Scrooge: What do you want?
+Hi Scrooge my name is Keanu. Nice to meet you.
+I'm Scrooge. What do you want?
 ...
-Keanu: What do you want?
-Scrooge: Hi Keanu. Nice to meet you.
+I'm Keanu. What do you want?
+Hi Keanu my name is Scrooge. Nice to meet you.
 ```
-
 
 ## Conclusion
 
@@ -217,19 +217,10 @@ With the above we've now done the following:
 
 This is the definition of the strategy pattern!
 
-### Other thoughts
-
-Some languages today e.g. Kotlin make it harder to accidentally break encapsulation:
-
-* Classes to be extended have to be declared `open`
-* Methods to be overridden have to be declared as `open` or `override` 
-
-It can make some of the examples a bit contrived, however, the focus here is to demonstrate the pattern not the language and I did not want to write this in Java! So don't be too critical if I'm bending the language to demonstrate the example for the benefit of simplicity.
-
 ### Patterns and design principles in general
 
 The Strategy Pattern may be simpler to understand compared to the [Template Method]({% post_url 2021-11-17-the-template-method-pattern %}).
-It's the first pattern in the Head First book and demonstrates fundamental OO principles one should always keep in mind:
+It's the first pattern in the Head First book and demonstrates fundamental OO principles one should strive to keep in mind:
 
 > *Encapsulate what varies*
 
@@ -237,8 +228,7 @@ It's the first pattern in the Head First book and demonstrates fundamental OO pr
 
 > *Program to interfaces, not implementations*
 
-The Template Method may be easier to spot in the wild compared to Strategy as it's statically defined (via Inheritance).
-However, Strategy can offer a lot more flexibility in regards to design and run-time behavior.
+The Template Method may be easier to spot in the wild compared to Strategy as it's statically defined (via Inheritance), the Strategy pattern can offer a lot more flexibility in regards to design and run-time behavior.
 
 ## References
 

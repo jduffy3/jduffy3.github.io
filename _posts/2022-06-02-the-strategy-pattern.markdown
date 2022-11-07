@@ -17,7 +17,7 @@ One principle of OOD is to:
 ### Why favor composition over inheritance?
 
 Inheritance is referred to as *white-box reuse* because a classes internals are visible to their subclasses.
-Classes are defined *within* a family of hierarhcies that extend a common parent class, and while it can help keep things DRY, inheritance can expose a parents implementation details to it's subclass which has led to some arguing ["inheritance breaks encapsulation"](https://www.cs.tufts.edu/comp/150CBD/readings/snyder86encapsulation.pdf).
+Classes are defined *within* a family of hierarchies that extend a common parent class, and while it can help keep things DRY, inheritance can expose a parents implementation details to it's subclass which has led to some arguing ["inheritance breaks encapsulation"](https://www.cs.tufts.edu/comp/150CBD/readings/snyder86encapsulation.pdf).
 
 How? 
 
@@ -35,7 +35,7 @@ This helps preserve encapsulation by removing exposure to implementation details
 How?
 
 Responsibilities are divided *across* class hierarchies, and so classes don't have access to the internal details of other classes.
-Anything that is accessible to clients, is because it has been explicitly exposed through it's public facing interface, adhering (in a sense) to another design principle:
+Anything that is accessible to clients, is because it has been explicitly exposed through it's public facing interface, adhering to another design principle:
 
 > *Program to interfaces, not implementations*
 
@@ -94,7 +94,7 @@ Hi Scrooge, my name is Keanu. Nice to meet you.
 I'm Scrooge. What do you want?
 ```
 
-It works... But the implemenation doesn't really capture how people greet each other. 
+It works... But the implementation doesn't really capture how people greet each other. 
 Moods are dynamic and influence how we greet each other. 
 If we wanted Scrooge to be a `NicePerson` we'd have to construct a new instance of `NicePerson`. The only way to do this in Kotlin is to modify the variable `scrooge` to be a `var` instead of `val` and declare `scrooge` as the type `Person`. 
 
@@ -209,26 +209,23 @@ Hi Keanu my name is Scrooge. Nice to meet you.
 
 ## Conclusion
 
-With the above we've now done the following:
+The Strategy Pattern demonstrates fundamental OO principles developers should strive to keep in mind:
 
-* Defined a family of algorithms (`Greeter`)
-* Encapsulated each one (`Mean`, `Nice`)
-* Made them interchangable (via method and constructor injection)
+* Encapsulate what varies
+* Favor composition over inheritance
+* Program to interfaces, not implementations
+
+This was accomplished by
+
+* Defining a family of algorithms (`Greeter`)
+* Encapsulating each one (`Mean`, `Nice`)
+* Making them interchangable (via method and constructor injection)
 
 This is the definition of the strategy pattern!
 
-### Patterns and design principles in general
+By encapsulating what varies, we identify the things that can change in a system. When done correctly, we satisfy the "open/closed principle". In the above example when people greet each other we discovered that their moods can change and so through the Greeter interface we've made moods open to extension and closed for modification. Trying to achieve this through inheritance lead us to an inflexible design that didn't allow us to change a person's mood without instantiating a new object. By favoring composition over inheritance our design was more flexible and is further protected by being accessible only through its public facing interface.
 
-The Strategy Pattern may be simpler to understand compared to the [Template Method]({% post_url 2021-11-17-the-template-method-pattern %}).
-It's the first pattern in the Head First book and demonstrates fundamental OO principles one should strive to keep in mind:
-
-> *Encapsulate what varies*
-
-> *Favor composition over inheritance*
-
-> *Program to interfaces, not implementations*
-
-The Template Method may be easier to spot in the wild compared to Strategy as it's statically defined (via Inheritance), the Strategy pattern can offer a lot more flexibility in regards to design and run-time behavior.
+I think the [Template Method]({% post_url 2021-11-17-the-template-method-pattern %}) is a great starting pattern when learning Design Patterns and the Strategy a nice follow up as the template is statically defined and may be easier to follow, while the Strategy pattern provides the same benefit while allowing you to change behavior at runtime. Either way, both are great patterns that when used correctly can really help structure a codebase cleanly.
 
 ## References
 
